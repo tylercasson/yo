@@ -84,18 +84,20 @@ class YoCommandHandler(object):
         """ Rename a command """
         alias1 = args.alias1
         alias2 = args.alias2
+
         self._read_config(args)
         command = self.config.get("commands", alias1)
         self.config.set("commands", alias2, command)
         self.config.remove_option("commands", alias1)
         self._write_config(args)
 
-        print("Yo, renamed command {alias1} to {alias2}".format(alias1, alias2))
+        print("Yo, renamed command {} to {}".format(alias1, alias2))
 
     def run_command(self, args):
         """ Run a command """
         alias = args.command
         self._read_config(args)
+        command = self.config.get("commands", alias)
 
         if command:
             env = os.environ.copy()
@@ -103,21 +105,19 @@ class YoCommandHandler(object):
 
     def list_commands(self, args):
         """ List available commands """
-        rc_file = self._get_config(args)
-        with rc_file.open(mode='r') as f:
-            self.config.read_file(f)
-            options = self.config.options("commands")
+        self._read_config(args)
+        options = self.config.options("commands")
 
-            longest = 0
-            for option in options:
-                length = len(option)
-                if length > longest:
-                    longest = length
-            print("\n{}Available commands\n".format(Colors.BOLD))
-            for option in options:
-                spaces = ' ' * (longest - len(option))
-                print("{}{}{}{}{} = {}".format(spaces, Colors.BOLD, Colors.BLUE, option, Colors.NORM, self.config.get('commands', option)))
-            print()
+        longest = 0
+        for option in options:
+            length = len(option)
+            if length > longest:
+                longest = length
+        print("\n{}Available commands\n".format(Colors.BOLD))
+        for option in options:
+            spaces = ' ' * (longest - len(option))
+            print("{}{}{}{}{} = {}".format(spaces, Colors.BOLD, Colors.BLUE, option, Colors.NORM, self.config.get('commands', option)))
+        print()
 
 
 YORC_FILE_NAME = ".yorc"
