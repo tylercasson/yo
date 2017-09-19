@@ -39,7 +39,7 @@ class YoCommandHandler(object):
 
     def _write_config(self, args):
         rc_file = self._get_config(args)
-        with open(rc_file, 'w') as f:
+        with rc_file.open(mode='w') as f:
             self.config.write(f)
 
     def init(self, args):
