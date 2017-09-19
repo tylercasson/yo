@@ -2,6 +2,14 @@
 
 yo command runner
 
+# installation
+
+```bash
+git clone https://github.com/tylercasson/yo
+cd yo
+python3 setup.py install
+```
+
 # usage
 
 ```bash
