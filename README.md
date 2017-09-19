@@ -1,30 +1,65 @@
-# yo
+# yo, a command runner
 
-yo command runner
+`yo` is a useful command-line utility for aliasing and running otherwise long commands.
 
-# installation
+## Installation
 
-```bash
+```
 git clone https://github.com/tylercasson/yo
 cd yo
 python3 setup.py install
 ```
 
-# usage
+## Usage
 
-```bash
-# initialize configuration
-yo init
+```
+$ yo help
+usage: yo [-h] [-g]
+          {help,init,destroy,wipe,add,remove,rm,rename,mv,run,list,ls} ...
 
-# check usage
-yo help
+Yo command runner
 
-# add commands
-yo add docker:clean "docker images -f dangling=true --quiet | xargs --no-run-if-empty docker rmi"
+optional arguments:
+  -h, --help            show this help message and exit
+  -g, --global          use global config
 
-# and run it
-yo run docker:clean
+commands:
+    help                show this help message and exit
+    init                initialize command file
+    destroy (wipe)      remove command file
+    add                 add command
+    remove (rm)         remove command
+    rename (mv)         rename command
+    run                 run command
+    list (ls)           list available command
+```
 
-# list available commands
-yo list
+### Initialize configuration
+
+```
+$ yo init
+```
+
+### Add commands
+
+```
+$ yo add <alias> "<command>"
+
+# Example
+$ yo add docker:clean "docker images -f dangling=true --quiet | xargs --no-run-if-empty docker rmi"
+```
+
+### Run commands
+
+```
+$ yo run <alias>
+
+# Example
+$ yo run docker:clean
+```
+
+### List available commands
+
+```
+$ yo list
 ```
