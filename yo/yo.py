@@ -62,25 +62,21 @@ class YoCommandHandler(object):
         """ Add a command """
         alias = args.alias
         command = ' '.join(args.command)
-        rc_file = self._get_config(args)
-        self.config.read(str(rc_file))
+        self._read_config(args)
         if not self.config.has_section("commands"):
             self.config.add_section("commands")
         self.config.set("commands", alias, command)
 
-        with open(rc_file, 'w') as f:
-            self.config.write(f)
-
+        self._write_config(args)
         print("Yo, added command: {}={}".format(alias, command))
 
     def remove_command(self, args):
         """ Remove a command """
         alias = args.alias
 
+        self._read_config(args)
         self.config.remove_option("commands", alias)
-
-        with open(rc_file, 'w') as f:
-            self.config.write(f)
+        self._write_config(args)
 
         print("Yo, removed command: {}".format(alias))
 
@@ -99,11 +95,7 @@ class YoCommandHandler(object):
     def run_command(self, args):
         """ Run a command """
         alias = args.command
-        rc_file = self._get_config(args)
-        command = None
-        with rc_file.open(mode='r') as f:
-            self.config.read_file(f)
-            command = self.config.get("commands", alias)
+        self._read_config(args)
 
         if command:
             env = os.environ.copy()
