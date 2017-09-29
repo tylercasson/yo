@@ -4,6 +4,7 @@ import argparse
 import configparser
 import os
 import subprocess
+import tempfile
 from pathlib import Path
 
 from yo import Colors, SubcommandHelpFormatter
@@ -118,6 +119,38 @@ class YoCommandHandler(object):
             spaces = ' ' * (longest - len(option))
             print("{}{}{}{}{} = {}".format(spaces, Colors.BOLD, Colors.BLUE, option, Colors.NORM, self.config.get('commands', option)))
         print()
+    
+    def edit_config(self, args):
+        """ Edit configuration in-place """
+        editor = os.environ.get("EDITOR", "vi")
+        config = self._get_config(args)
+        conf_str = ""
+        with config.open(mode="r") as c:
+            conf_str = c.read()
+        
+        with tempfile.NamedTemporaryFile(suffix=".tmp") as tmp:
+            header = bytes("# Edit the contents below and save to update {}\n#\n{}".format(config, conf_str), encoding="utf-8")
+            tmp.write(header)
+            tmp.flush()
+            tmp_modified = os.stat(tmp.name).st_mtime
+            
+            subprocess.call([editor, tmp.name])
+            
+            if os.stat(tmp.name).st_mtime > tmp_modified:
+                tmp.seek(0)
+                for index, line in enumerate(tmp):
+                    if index <= 1 and line.decode()[0] == "#":
+                        if line == b"#\n":
+                            break
+                    else:
+                        exit("Temp file header is corrupt, aborting")
+                
+                edits = tmp.read()
+                
+                with config.open(mode="wb") as c:
+                    c.write(edits)
+            else:
+                exit("No changes detected, cancelling edit")
 
 
 YORC_FILE_NAME = ".yorc"
@@ -163,6 +196,9 @@ def cli():
 
     parser_list = subparsers.add_parser("list", aliases=['ls'], help="list available command")
     parser_list.set_defaults(func=yo.list_commands)
+    
+    parser_edit = subparsers.add_parser("edit", help="edit configuration")
+    parser_edit.set_defaults(func=yo.edit_config)
 
     args = parser.parse_args()
     try:
