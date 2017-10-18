@@ -7,7 +7,7 @@
 ```
 git clone https://github.com/tylercasson/yo
 cd yo
-python3 setup.py install
+python3 setup.py install --user --prefix=
 ```
 
 ## Usage
