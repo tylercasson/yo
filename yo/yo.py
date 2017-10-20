@@ -114,10 +114,16 @@ class YoCommandHandler(object):
             length = len(option)
             if length > longest:
                 longest = length
-        print("\n{}Available commands\n".format(Colors.BOLD))
+        if os.name == "nt":
+            print("\nAvailable commands\n")
+        else:
+            print("\n{}Available commands\n".format(Colors.BOLD))
         for option in options:
             spaces = ' ' * (longest - len(option))
-            print("{}{}{}{}{} = {}".format(spaces, Colors.BOLD, Colors.BLUE, option, Colors.NORM, self.config.get('commands', option)))
+            if os.name == "nt":
+                print("%s%s = %s" % (spaces, option, self.config.get('commands', option)))
+            else:
+                print("{}{}{}{}{} = {}".format(spaces, Colors.BOLD, Colors.BLUE, option, Colors.NORM, self.config.get('commands', option)))
         print()
 
     def edit_config(self, args):
