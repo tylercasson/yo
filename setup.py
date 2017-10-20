@@ -6,8 +6,9 @@ import sys
 version = sys.version_info
 message = "yo needs Python>=3.5. Found {}".format(sys.version)
 
-if version.major < 3 and version.minor < 5:
-    sys.exit(message)
+if version.major <= 3:
+    if version.minor < 5:
+        sys.exit(message)
 
 requires = []
 
