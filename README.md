@@ -7,15 +7,18 @@
 ```
 git clone https://github.com/tylercasson/yo
 cd yo
-python3 setup.py install --user --prefix=
+python3 setup.py install --user
 ```
+
+Note that installation may vary on each system. This should work assuming your `PATH` is configured appropriately
 
 ## Usage
 
 ```
 $ yo help
 usage: yo [-h] [-g]
-          {help,init,destroy,wipe,add,remove,rm,rename,mv,run,list,ls} ...
+          {help,init,destroy,wipe,add,remove,rm,rename,mv,run,list,ls,edit}
+          ...
 
 Yo command runner
 
@@ -32,6 +35,7 @@ commands:
     rename (mv)         rename command
     run                 run command
     list (ls)           list available command
+    edit                edit configuration
 ```
 
 ### Initialize configuration
